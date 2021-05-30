@@ -4,13 +4,13 @@
 ---
 
 ## Last weeks progress
-1. Importing the dataset in PyCharm
-2. Creating a reading function which allows direct location of a certain file
-3. Uploading the Python file with the code to GitHub and saving it as main.py
+1.Manually dividing the dataset into training and testing set
+2. 
 
 
 ## Questions
--
+-Should the division of the dataset be done by code or by separation into two different folders manually?
+
 
 ## Plans for next week
- Splitting the dataset into training and testing set
+
