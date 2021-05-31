@@ -10,7 +10,7 @@
 
 ## Questions
 -Should the division of the dataset be done by code or by separation into two different folders manually?
--There are images with extention ".bad" and they are completely black, what should we do with them?
+-There are image with extention ".bad" and they are completely black, what should we do with them?
 
 ## Plans for next week
 
