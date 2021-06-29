@@ -38,38 +38,4 @@ obj = pca(0.9)
 PC = obj.fit_transform(image_matrix)
 print(PC.shape)
 
-'''
-# img_width, img_height = 50, 50
-# ImageToMatrixClassObj = ImageToMatrixClass(images_path_for_training, img_width, img_height)
-# img_matrix = ImageToMatrixClassObj.get_matrix()
 
-# PCA_class_obj = PCA(img_matrix, labels_for_training, image_targets,
-# no_of_elements_for_training, img_width, img_height, quality_percent=90)
-# new_coordinates = PCA_class_obj.reduce_dim()
-
-# Recognizing
-
- if reco_type == "image":
-    # correct = 0
-    # wrong = 0
-    # i = 0
-    # for img_path in images_path_for_testing:
-      #  img = PCA_class_obj.img_from_path(img_path)
-      #  PCA_class_obj.show_image("Recognize Image", img)
-      # new_cords_for_image = PCA_class_obj.new_coords(img)
-
-      #  found_name = PCA_class_obj.recognize_face(new_cords_for_image)
-      #  target_index = labels_for_testing[i]
-        # original_name = image_targets[target_index]
-
-        # if found_name is original_name:
-          #  correct += 1
-           # print("Correctly matched", "Label: ", found_name)
-        # else:
-          #  wrong += 1
-          # print("Wrongly matched", "Label: ", original_name)
-        # i += 1
-    # print("Total correct: ", correct)
-    # print("Toatal wrong: ", wrong)
-    # print("Accuracy: ", correct / (correct + wrong) * 100)
-'''
