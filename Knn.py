@@ -1,19 +1,20 @@
-from sklearn.model_selection import train_test_split
-from sklearn.neighbors import KNeighborsClassifier
+import numpy as np
 
-# X_train and X_test = the pictures in the training and testing data
-# y_train and y_test = the labels of the pictures (these will be the names of the folders for each person)
+# trainimages_pca: transformed training images using pca
+# new_image: tasted data image, array, after pca
 
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, random_state = 21, stratify = y)
+def euclidean_distance(trainimages_pca, new_image):
+    distance = np.sqrt(np.sum(np.square(trainimages_pca - new_image)))
+    return distance
 
-# Create a k-NN classifier with 5 neighbors
-knn = KNeighborsClassifier(n_neighbors = 5)
+# trainlabels = string with the names of pictures, vector
+# k = number of neighbors
+def KNN(trainimages_pca, trainlabels, new_image, k):
+    for train_image in trainimages_pca:
+        dist = euclidean_distance(train_image, new_image)
+        neighbors= np.sort(dist)[:k] # sorting the array, first element is the smallest
+        return neighbors
 
-# Fit the classifier to the data
-knn.fit(X_train, y_train)
-
-# Predicting the labels for the training data X: y_pred
-y_pred = knn.predict(X_test)
 
 
 
