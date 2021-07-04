@@ -9,7 +9,7 @@ class DatasetClass:
     # number of images (how many pictures per person go into the group)
 
     def __init__(self, required_no):
-        dir = "./CroppedYale/"
+        dir = "../CroppedYale/"
 
         self.training_paths = []
         self.training_labels = []

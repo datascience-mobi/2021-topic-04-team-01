@@ -11,6 +11,7 @@
 
 ## Questions
 - Could you please give us a feedback for our code? 
+- How can we make pca work for matrices with different dimensions?
 
 ## Plans for next week
 Starting the report 
