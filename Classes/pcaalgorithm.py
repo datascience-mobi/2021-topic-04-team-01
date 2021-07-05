@@ -1,7 +1,6 @@
 import numpy as np
 import scipy.linalg as linalg
 
-
 class PCA:
     # that is called a constructor
     def __init__(self, image_matrix, quality_percent):
