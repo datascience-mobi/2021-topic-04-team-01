@@ -31,7 +31,7 @@ class MetaData:
 
         def size(data):
             """
-            Gives how muc images should each person have in training.
+            Gives how much images should each person have in training.
             """
             folder = data.joinpath("./yaleB01")
             pgm_files = folder.glob("*.pgm")

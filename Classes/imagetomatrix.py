@@ -6,12 +6,9 @@ import numpy as np
 
 class ImageToMatrixClass:
     """
-    Opens image paths and converts them into a numpy array, eg. image_matrix
-    \n
-    image_paths are the path names of each image
-    \n
-    image_width is desired width of the image
-    \n
+    Opens image paths and converts them into a numpy array, eg. image_matrix\n
+    image_paths are the path names of each image\n
+    image_width is desired width of the image\n
     image_height is the desired height of the image
     """
     # image_width and image_height can be changed

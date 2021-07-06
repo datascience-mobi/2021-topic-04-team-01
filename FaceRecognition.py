@@ -3,6 +3,7 @@ from Classes import datasplit as ds
 from Classes import pcaalgorithm as pca
 from Classes import knn
 
+
 # Get the paths and labels of the data
 train_percent = 80
 

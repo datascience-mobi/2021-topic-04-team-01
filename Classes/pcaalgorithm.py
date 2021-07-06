@@ -11,7 +11,6 @@ class PCA:
         The quality_percent describes how much of the variance should be described by the model.
     """
 
-    # that is called a constructor
     def __init__(self, train_matrix, quality_percent):
         # image_ matrix is from images to matrix
         self.train_matrix = train_matrix
