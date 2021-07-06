@@ -32,7 +32,7 @@ class KNearestNeighbors:
 
         # get the k nearest neighbors, the smallest distances, get the nearest labels
         k_indices = np.argsort(distances)[:self.k]   # sort the distances and find the 5 nearest pictures from the training set
-        k_nearest_labels = [self.trainlabels[i] for i in k_indices]  # index 0 means person 1
+        k_nearest_labels = [self.trainlabels[i] for i in k_indices]  # indices correspond to the labels, but the labels are numbers not names
         # print("these are the indices", k_indices)
         # print("these are the nearest labels", k_nearest_labels)
         # we want to get the most common class label, majority vote
