@@ -1,15 +1,23 @@
-import os
+import pathlib as pl
+import numpy as np
 
-
-class DatasetClass:
+class MetaData:
+    """
+    Loads the file paths for each image of the dataset
+    and splits them into testing and training. Labels of the training
+    and testing set are also loaded \n (they correspond to the folder name of each image)
+    \n The train_percent determines how much of the images go into training
+    """
     # variable number of required images for training
     # this class has the attributes/ modules
-    # image path (name of the folder + the name of teh image)
+    # image path (name of the folder + the name of the image)
     # labels (person number, corresponding to the folder number)
     # number of images (how many pictures per person go into the group)
 
-    def __init__(self, required_no):
-        dir = "../CroppedYale/"
+    def __init__(self, train_percent):
+
+        self.data = pl.Path("./CroppedYale")
+        self.train_percent = train_percent/100
 
         self.training_paths = []
         self.training_labels = []
@@ -21,63 +29,61 @@ class DatasetClass:
 
         self.target_labels_training = []
 
-        # the variable is used for labeling
+        def size(data):
+            """
+            Gives how muc images should each person have in training.
+            """
+            folder = data.joinpath("./yaleB01")
+            pgm_files = folder.glob("*.pgm")
+
+            image_number = 0
+            for image in pgm_files:
+                # Skip the ambient files
+                if str(image).find('Ambient') != -1:
+                    continue
+                image_number += 1
+            required_no = int(self.train_percent * image_number)
+
+            return required_no
+
         person_number = 0
         # go to each dir in CroppedYale
-        for person_name in os.listdir(dir):
-            dir_path = os.path.join(dir, person_name)
-            # check if it is a directory
-            if os.path.isdir(dir_path):
-                # check if the directory has enough images for training
-                if len(os.listdir(dir_path)) >= required_no:
-                    # image count is img_number = -2 because the first 2 files are not .pgm
-                    img_number = -2
-                    # inside a folder of a person, for example 'yaleB01'
-                    for img_name in os.listdir(dir_path):
+        for person_name in self.data.glob("*"):
+            img_number = 0
+            # Check if it is an image
+            for img_name in person_name.glob("*.pgm"):
+                # Skip the ambient files
+                if str(img_name).find('Ambient') != -1:
+                    continue
+                label = str(img_name.parent)
+                label = label.replace((str(self.data)), "")
 
-                        if img_name.endswith('.pgm'):
-                            # check if it is an image
-                            # skips files that are not .pgm
-                            # add the image_name to the dir with person_name
-                            img_path = os.path.join(dir_path, img_name)
-                            # skip the ambient files
-                            # the function gives you an error for -1
-                            # the ambient files skip this image
-                            if img_name.find('Ambient') != -1:
-                                continue
+                # If the number is under the required for training put in training
+                if img_number < size(self.data):
+                    self.training_paths += [str(img_name)]
+                    self.training_labels += [str(label)]
+                    if len(self.no_images_training) > person_number:
+                        self.no_images_training[person_number] += 1
+                    else:
+                        self.no_images_training += [1]
+                else:
+                    # when the required number of images for training has been reached
+                    self.testing_paths += [str(img_name)]
+                    self.testing_labels += [str(label)]
+                    if len(self.no_images_testing) > person_number:
+                        self.no_images_testing[person_number] += 1
+                    else:
+                        self.no_images_testing += [1]
+                # increase after every image
+                img_number += 1
+            # increases after every folder
+            person_number += 1
 
-                            if img_number < required_no:
-                                self.training_paths += [img_path]
-                                self.training_labels += [person_number]
-                                # the number of images already in the array is less the required number
-                                # for raining increase the images in the array by one
-                                if len(self.no_images_training) > person_number:
-                                    # we are increase the number of pictures of the person
-                                    # it starts at 0 than it increases by 1 until it reaches person_number
-                                    # for person 2 the value of no_of_images_for_training will be 2
-                                    self.no_images_training[person_number] += 1
-                                else:
-                                    # start counting when not present
-                                    self.no_images_training += [1]
+        self.training_paths = np.asarray(self.training_paths)
+        self.training_labels = np.asarray(self.training_labels)
 
-                                # if the loop has started
-                                if img_number == 0:
-                                    self.target_labels_training += [person_name]
-                                    # this array will contain the dir names yaleB01 and thus forth
+        self.testing_paths = np.asarray(self.testing_paths)
+        self.testing_labels = np.asarray(self.testing_paths)
 
-                            # when the required number of images for training has been reached
-                            # the other images go to testing
-                            else:
-                                self.testing_paths += [img_path]
-                                self.testing_labels += [person_number]
-
-                                if len(self.no_images_testing) > person_number:
-                                    self.no_images_testing[person_number] += 1
-                                else:
-                                    self.no_images_testing += [1]
-                        # increase after every image
-                        img_number += 1
-                    # after every folder increases
-                    person_number += 1
         print("Training image_paths are loaded successfully", self.no_images_training)
         print("Testing image_paths are loaded successfully", self.no_images_testing)

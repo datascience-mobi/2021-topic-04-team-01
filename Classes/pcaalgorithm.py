@@ -5,7 +5,9 @@ import scipy.linalg as linalg
 class PCA:
     """ Principal component analysis (PCA).
         Linear dimensionality reduction of the data to project it to a lower dimensional space.
-        The train_matrix is the matrix of the training set
+        \n
+        The train_matrix is the matrix of the training set.
+        \n
         The quality_percent describes how much of the variance should be described by the model.
     """
 

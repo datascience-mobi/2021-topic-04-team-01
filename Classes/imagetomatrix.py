@@ -5,6 +5,15 @@ import numpy as np
 
 
 class ImageToMatrixClass:
+    """
+    Opens image paths and converts them into a numpy array, eg. image_matrix
+    \n
+    image_paths are the path names of each image
+    \n
+    image_width is desired width of the image
+    \n
+    image_height is the desired height of the image
+    """
     # image_width and image_height can be changed
     # image_paths is the same as the training_paths or testing_paths
     def __init__(self, image_paths, image_width, image_height):

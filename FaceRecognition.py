@@ -1,41 +1,38 @@
-from datasplit import DatasetClass
-from imagetomatrix import ImageToMatrixClass
-from pcaalgorithm import PCA
-from sklearn.decomposition import PCA as pca
-# reco_type = "image"
-import numpy as np
-# required images for training so it should be 80% of 64
-# integer of 0,8 * 5 = 64 is 51
-no_of_images_of_one_person = 51
+from Classes import imagetomatrix as img
+from Classes import datasplit as ds
+from Classes import pcaalgorithm as pca
+from Classes import knn
 
-yaleB = DatasetClass(no_of_images_of_one_person)
+# Get the paths and labels of the data
+train_percent = 80
+
+yaleB = ds.MetaData(train_percent)
 
 training_paths = yaleB.training_paths
 training_labels = yaleB.training_labels
-no_images_training = yaleB.no_images_training
 
 testing_paths = yaleB.testing_paths
 testing_labels = yaleB.testing_labels
-no_images_testing = yaleB.no_images_testing
 
-# if want the targets as a column vector, make them as a column vector in the datasplit
-image_targets = np.asmatrix(yaleB.target_labels_training).T
-
+# Load the the paths as image matrices
 image_width, image_height = 168, 192
-training_set = ImageToMatrixClass(training_paths, image_width, image_height)
-image_matrix = training_set.get_matrix()
 
-pca_images = PCA(image_matrix, 90)
-print("this is the normalized matrix", pca_images.norm_matrix.shape)
-print("this is the covariance matrix", pca_images.cov_matrix.shape)
-p_values = pca_images.n_components()
-print(p_values)
+training_set = img.ImageToMatrixClass(training_paths, image_width, image_height)
+train_matrix = training_set.get_matrix()
 
-tr_matrix = pca_images.fit_transform()
-print(tr_matrix.shape)
+testing_set = img.ImageToMatrixClass(testing_paths, image_width, image_height)
+test_matrix = testing_set.get_matrix()
 
-obj = pca(0.9)
-PC = obj.fit_transform(image_matrix)
-print(PC.shape)
+# Do PCA dimension reduction
+pca_images = pca.PCA(train_matrix, 90)
+
+components = pca_images.fit_svd()
+train_tr = pca_images.transform(train_matrix)
+test_tr = pca_images.transform(test_matrix)
+
+print(train_tr.shape)
+print(test_tr.shape)
+
+# Load KNN
 
 
