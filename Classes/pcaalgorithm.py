@@ -1,86 +1,114 @@
 import numpy as np
 import scipy.linalg as linalg
 
+
 class PCA:
+    """ Principal component analysis (PCA).
+        Linear dimensionality reduction of the data to project it to a lower dimensional space.
+        The train_matrix is the matrix of the training set
+        The quality_percent describes how much of the variance should be described by the model.
+    """
+
     # that is called a constructor
-    def __init__(self, image_matrix, quality_percent):
+    def __init__(self, train_matrix, quality_percent):
         # image_ matrix is from images to matrix
-        self.image_matrix = image_matrix
-        # how many images are there in the dataset
-        self.no_of_images = self.image_matrix.shape[0]
-        # how many percent of the data should be represented
-        self.quality_percent = quality_percent
+        self.train_matrix = train_matrix
+        # how many percent of the data should be represented, converted into a float
+        self.quality_percent = quality_percent / 100
 
-        # image matrix has rows as people and columns as pixels
-        # We will add elements of the rows of the image so 0
-        mean = np.mean(self.image_matrix, axis=0)
+        # The real matrix G is our image_matrix
+        # It is an n x m matrix
+        # n is the number of features/columns, which are the pixels of an image
+        # m is the number of samples/rows, which are the people in the dataset
+        self.n_samples, self.n_features = train_matrix.shape
+
+        # Centering the data
+        self.mean_face = np.mean(self.train_matrix, axis=0)
+        # We will add elements of the rows of the image so axis = 0
         # self.mean_face is a row vector mean_face.shape == img_mat[1].shape
-        self.mean_face = np.asmatrix(mean)
-        self.norm_matrix = self.image_matrix - self.mean_face
-        # We will use the covariance matrix C to preserve variance
-        # Using the covariance matrix it is the same whether we use svd or eigenvector decomposition
-        # As we are looking at pixels
-        # the range and scale of variables is similar and they have the same units of measurement.
+        self.norm_matrix = self.train_matrix - self.mean_face
 
-        # Transposing the matrix for reduction in computational time
-        self.cov_matrix = np.cov(self.norm_matrix.T, rowvar=False)
+        # the covariance matrix is nxn
+        self.cov_matrix = np.zeros(shape=[self.n_features, self.n_features])
+
+    def fit_evd(self):
+        """
+        Using eigen value decomposition (eigendecomposition) for dimensionality reduction.
+        Outputs the components that explain X% of the variance in the data.
+        (X% is the quality_percent). TAKES TOO MUCH TIME, BECAUSE OF THE COVARIATION MATRIX.
+        """
+        # EVD only work on square matrices as we need to compute the eigenvalues and eigenvectors
+        # For this we compute the covariance matrix K
+        # K should be n x n matrix (pixels x pixels)
+
+        self.cov_matrix = np.cov(self.norm_matrix, rowvar=False)
         # C is a symmetric matrix and so it can be diagonalized:
-        self.eig_val, self.eig_vec = linalg.eig(self.cov_matrix)
+        eig_val, eig_vec = linalg.eig(self.cov_matrix)
 
         # Sorting the eigenvectors by decreasing eigenvalues
         # [Start : stop : stepcount] stepcount is reversed
-        idx = self.eig_val.argsort()[::-1]
-        self.eig_val, self.eig_vec = self.eig_val[idx], self.eig_vec[:, idx]
+        idx = eig_val.argsort()[::-1]
+        eig_val, eig_vec = eig_val[idx], eig_vec[:, idx]
 
-        # projections of X on the principal axes are called principal components
-        # covariance matrix times the eigenvector matrix
+        # Explained_variance tell us how much of the variance in the data each eigen value explains
+        explained_variance = eig_val / (self.n_samples - 1)
+        # total_var is the total variance in the data
+        total_var = explained_variance.sum()
+        explained_variance_ratio = explained_variance / total_var
+        # The cumulative sum of all ratios
+        ratio_cumsum = np.cumsum(explained_variance_ratio)
 
-    def n_components(self):
-        # Where did we calculate the eig_vals
-        sum_original = np.sum(self.eig_val)
-        # how well should be able to explain the variability of the data
-        # check in the other PCA function
-        sum_threshold = sum_original * self.quality_percent / 100
-        # sum of the eigenvalues until the threshold
-        sum_temp = 0
-        # number of eigenvalues
-        p = 0
-        while sum_temp < sum_threshold:
-            sum_temp += self.eig_val[p]
-            p += 1
-        return p
-        # says how much eigenvalues we have used
+        # We search in the cumsum for the index of the value which, when added, corresponds to the quality_percent
+        # The index of the cumsum gives us the components we need to add to explain X quality percent of our data
+        n_components = np.searchsorted(ratio_cumsum, self.quality_percent, side='right') + 1
 
-    def fit(self):
-        # singular value decomposition
-        # U is unitary array AA.t, S is square roots of the eigenvalues,  Vt is the transposed matrix of A_tA
-        # used svd for dim_reduction
-        # An m by n matrix M
-        # Where U is an m by r matrix, V is an n by r matrix,
-        # and S is an r by r matrix; where r is the rank of the matrix M.
-        # V is transposed so you can have a r by n matrix in the end
-        # full_matrices means they are square m m and n n
-
-        self.mean = np.mean(self.image_matrix, axis=0)
-        self.image_matrix -= self.mean
-
-        U, S, Vt = linalg.svd(self.image_matrix, full_matrices=False)
-        p = self.n_components()
-        # combine only the first p singular values so p is our rank
-        # That is where the p should be
-        self.components = Vt[:p]
-        # dot multiplycation is multiply the elements with eachother
-        # self is a matrix so we multiply U-transposed with M
+        self.components = eig_vec[:n_components]
         return self.components
 
-    def transform(self, X):
+    def fit_svd(self):
+        """
+        Dimensionality reduction using singular value decomposition (SVD).
+        Outputs the components that explain X% of the variance in the data.
+        (X% is the quality_percent)
+        """
+        # U has the eigenvectors of G.Gt as columns ()
+        # S has square roots of the eigenvalues of G.Gt and Gt.G in its diagonal
+        # The square roos of the eigenvalues are called singular values
+        # V has the eigenvectors of Gt.G as columns ()
+        # full_matrices set to false will set the Vt matrix to a shape m x n
 
-        self.mean = np.mean(X, axis=0)
-        X = X - self.mean
-        X_transformed = np.dot(X, self.components.T)
-        return X_transformed
+        U, S, Vt = linalg.svd(self.norm_matrix, full_matrices=False)
 
-    # find new coordinates of any pixel of an image
+        # Compute the eigenvalues
+        eig_val = (S ** 2)
+
+        # Explained_variance tell us how much of the variance in the data each eigen value explains
+        explained_variance = eig_val / (self.n_samples - 1)
+        # total_var is the total variance in the data
+        total_var = explained_variance.sum()
+        explained_variance_ratio = explained_variance / total_var
+        # The cumulative sum of all ratios
+        ratio_cumsum = np.cumsum(explained_variance_ratio)
+
+        # We search in the cumsum for the index of the value which, when added, corresponds to the quality_percent
+        # The index of the cumsum gives us the components we need to add to explain X quality percent of our data
+        n_components = np.searchsorted(ratio_cumsum, self.quality_percent, side='right') + 1
+
+        self.components = Vt[:n_components]
+
+        return self.components
+
+    def transform(self, image_matrix):
+        """
+        Uses the components from the fit functions to transform an Image_matrix (of the training or testing set)
+        """
+        # Centering the data
+        mean = np.mean(image_matrix, axis=0)
+        image_matrix = image_matrix - mean
+
+        # Dimension reduction is done by multiplying the original matrix with the components
+        transformed_matrix = np.dot(image_matrix, self.components.T)
+        return transformed_matrix
 
 
 
