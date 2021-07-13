@@ -1,6 +1,7 @@
 import pathlib as pl
 import numpy as np
 
+
 class MetaData:
     """
     Loads the file paths for each image of the dataset
@@ -83,7 +84,7 @@ class MetaData:
         self.training_labels = np.asarray(self.training_labels)
 
         self.testing_paths = np.asarray(self.testing_paths)
-        self.testing_labels = np.asarray(self.testing_paths)
+        self.testing_labels = np.asarray(self.testing_labels)
 
         print("Training image_paths are loaded successfully", self.no_images_training)
         print("Testing image_paths are loaded successfully", self.no_images_testing)

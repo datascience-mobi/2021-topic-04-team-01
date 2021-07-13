@@ -18,6 +18,7 @@ class ImageToMatrixClass:
         self.images_width = image_width
         self.images_height = image_height
         self.images_size = image_width * image_height
+        self.matrix = self.get_matrix()
 
     def get_matrix(self):
         # rows are people and columns are pixels

@@ -27,20 +27,21 @@ class PCA:
         self.mean_face = np.mean(self.train_matrix, axis=0)
         # We will add elements of the rows of the image so axis = 0
         # self.mean_face is a row vector mean_face.shape == img_mat[1].shape
-        self.norm_matrix = self.train_matrix - self.mean_face
-
-        # the covariance matrix is nxn
-        self.cov_matrix = np.zeros(shape=[self.n_features, self.n_features])
+        # Z-transformation if we divide by the standard deviation
+        self.norm_matrix = (self.train_matrix - self.mean_face)/np.std(train_matrix, axis=0)
 
     def fit_evd(self):
         """
         Using eigen value decomposition (eigendecomposition) for dimensionality reduction.
         Outputs the components that explain X% of the variance in the data.
-        (X% is the quality_percent). TAKES TOO MUCH TIME, BECAUSE OF THE COVARIATION MATRIX.
+        (X% is the quality_percent). TAKES TOO MUCH TIME, BECAUSE OF THE COVARIANCE MATRIX.
         """
         # EVD only work on square matrices as we need to compute the eigenvalues and eigenvectors
         # For this we compute the covariance matrix K
         # K should be n x n matrix (pixels x pixels)
+
+        # The covariance matrix is nxn
+        self.cov_matrix = np.zeros(shape=[self.n_features, self.n_features], dtype='uint8')
 
         self.cov_matrix = np.cov(self.norm_matrix, rowvar=False)
         # C is a symmetric matrix and so it can be diagonalized:
@@ -64,6 +65,8 @@ class PCA:
         n_components = np.searchsorted(ratio_cumsum, self.quality_percent, side='right') + 1
 
         self.components = eig_vec[:n_components]
+        print("The principal components have been calculated using eigendecomposition", self.components.shape)
+
         return self.components
 
     def fit_svd(self):
@@ -96,6 +99,7 @@ class PCA:
         n_components = np.searchsorted(ratio_cumsum, self.quality_percent, side='right') + 1
 
         self.components = Vt[:n_components]
+        print("The principal components have been calculated using svd", self.components.shape)
 
         return self.components
 
@@ -110,7 +114,3 @@ class PCA:
         # Dimension reduction is done by multiplying the original matrix with the components
         transformed_matrix = np.dot(image_matrix, self.components.T)
         return transformed_matrix
-
-
-
-
