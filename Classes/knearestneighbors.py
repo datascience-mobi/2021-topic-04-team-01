@@ -20,7 +20,7 @@ class KNearestNeighbors:
             \n
             k is the number of neighbors which we use to the determine the label of the testing image.
         """
-    def __init__(self, train_images_pca, training_labels, k=6):
+    def __init__(self, train_images_pca, training_labels, k=5):
         self.k = k
         self.train_images_pca = train_images_pca
         self.training_labels = training_labels
@@ -52,3 +52,6 @@ class KNearestNeighbors:
         # we want to get the most common class label, majority vote
         most_common = Counter(k_nearest_labels).most_common(1)  # we want to have only one most common item
         return most_common[0][0]  # to get the tuple and the first item of it
+
+
+
