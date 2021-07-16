@@ -44,3 +44,16 @@ def vector_show(vector, image_height, image_width):
         """
     plt.imshow(vector.reshape(image_height, image_width), cmap="gray")
     plt.show()
+
+
+def show_components(pca_fit_model, image_height, image_width):
+    """ Shows some of the components of the pca model
+                \n
+                The pca_fit_model requires the fitted train_matrix.
+                \n
+                image_height, image_width describe how big the image is.
+            """
+    for i in range(36):
+        plt.subplot(6, 6, i + 1)
+        plt.imshow(pca_fit_model[i].reshape(image_height, image_width), cmap="gray")
+    plt.show()
