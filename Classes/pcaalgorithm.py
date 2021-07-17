@@ -81,6 +81,7 @@ class PCA:
 
         :return:  principal components in a form of a matrix
         """
+
         # U has the eigenvectors of G.Gt as columns ()
         # S has square roots of the eigenvalues of G.Gt and Gt.G in its diagonal
         # The square roos of the eigenvalues are called singular values

@@ -120,4 +120,3 @@ def k_sklearnplot(k_values, train_pca_sklearn, training_labels, test_pca_sklearn
     sb.barplot(data=df, x=k_labels, y=scores_list, color="salmon").set(title='Accuracy by different k [%]')
     fig = plt.show()
     return fig
-

@@ -60,6 +60,7 @@ class ImageToMatrix:
 
         :return: image matrix with all the images
         """
+
         # rows are people and columns are pixels
         # row size is the number of images
         row = len(self.paths)

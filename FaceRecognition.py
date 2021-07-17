@@ -5,7 +5,6 @@ from Classes import knearestneighbors as knn
 from Classes import visualising as vis
 
 # Get the paths and labels of the data
-
 image_height, image_width = 192, 168
 yaleB = img.ImageToMatrix("CroppedYale", image_height, image_width)
 image_matrix = yaleB.matrix()

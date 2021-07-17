@@ -25,11 +25,12 @@ def k_accuracy(predicted_labels, testing_labels):
     correct = 0
     for i in range(predicted_labels.shape[0]):
         if predicted_labels[i] == testing_labels[i]:
-                correct += 1
+            correct += 1
         else:
             continue
     accuracy_percent = (correct / predicted_labels.shape[0]) * 100
     return accuracy_percent
+
 
 class KNearestNeighbors:
     """ K-Nearest Neighbors (KNN).
@@ -79,8 +80,3 @@ class KNearestNeighbors:
         # we want to get the most common class label, majority vote
         most_common = Counter(k_nearest_labels).most_common(1)  # we want to have only one most common item
         return most_common[0][0]  # to get the tuple and the first item of it
-
-
-
-
-
