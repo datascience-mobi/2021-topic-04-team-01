@@ -1,6 +1,6 @@
 from Classes import knearestneighbors as knn
 import pandas as pd
-import seaborn as sb
+import seaborn as sns
 import matplotlib.pyplot as plt
 
 from sklearn.neighbors import KNeighborsClassifier as KNN
@@ -72,7 +72,7 @@ def k_barplot(k_values, train_images_pca, training_labels, test_images_pca, test
     """
     accuracy_vec = []
     k_labels = []
-    for k in range(1, k_values):
+    for k in range(1, k_values+1):
         # the accuracy values
         train_knn = knn.KNearestNeighbors(train_images_pca, training_labels, k)
         predicted_labels = train_knn.predict(test_images_pca)
@@ -82,9 +82,10 @@ def k_barplot(k_values, train_images_pca, training_labels, test_images_pca, test
         k_new = "k=" + str(k)
         k_labels += [str(k_new)]
     df = pd.DataFrame(accuracy_vec, k_labels)
-    sb.barplot(data=df, x=k_labels, y=accuracy_vec).set(title='Accuracy by different k [%]')
-    fig = plt.show()
-    return fig
+    sns.barplot(data=df, x=k_labels, y=accuracy_vec).set(title='Accuracy by different k [%]',
+                                                               ylim=(0, 100))
+    plt.xticks(rotation=90)
+    plt.show()
 
 
 def k_sklearnplot(k_values, train_pca_sklearn, training_labels, test_pca_sklearn, testing_labels):
@@ -102,7 +103,7 @@ def k_sklearnplot(k_values, train_pca_sklearn, training_labels, test_pca_sklearn
     :return: barplot, for which on x axis are the k values
         and on y axis are the accuracy values.
     """
-    k_range = range(1, k_values)
+    k_range = range(1, k_values+1)
     scores = {}
     scores_list = []
     k_labels = []
@@ -117,6 +118,7 @@ def k_sklearnplot(k_values, train_pca_sklearn, training_labels, test_pca_sklearn
         k_labels += [str(k_new)]
 
     df = pd.DataFrame(scores_list, k_labels)
-    sb.barplot(data=df, x=k_labels, y=scores_list, color="salmon").set(title='Accuracy by different k [%]')
-    fig = plt.show()
-    return fig
+    sns.barplot(data=df, x=k_labels, y=scores_list, color="salmon").set(title='Accuracy by different k [%]',
+                                                                              ylim=(0, 100))
+    plt.xticks(rotation=90)
+    plt.show()
