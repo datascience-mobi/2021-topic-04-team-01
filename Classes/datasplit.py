@@ -1,90 +1,55 @@
-import pathlib as pl
 import numpy as np
+from itertools import chain
 
 
-class MetaData:
+def random_indices(array, train_percent, seed):
     """
-    Loads the file paths for each image of the dataset
-    and splits them into testing and training. Labels of the training
-    and testing set are also loaded \n (they correspond to the folder name of each image)
-    \n The train_percent determines how much of the images go into training
+    Produces random indices used to split the data.
+
+    :param array: an array, whose size is used for the calculation
+    :param train_percent: the percentage of the data that goes into training
+    :param seed:  random number used to generate the indices of the split matrices. By using he same number the
+    results are the same.
+
+
+    :return: indices for training and testing
     """
-    # variable number of required images for training
-    # this class has the attributes/ modules
-    # image path (name of the folder + the name of the image)
-    # labels (person number, corresponding to the folder number)
-    # number of images (how many pictures per person go into the group)
 
-    def __init__(self, train_percent):
+    train_size = train_percent/100
+    n_samples = len(array)
+    # try here with int() floor
+    n_train = int(train_size * n_samples)
+    n_test = n_samples - n_train
+    n_train, n_test = int(n_train), int(n_test)
+    rng = np.random.RandomState(seed)
+    print("There are", n_train, "images in training and", n_test, "images in testing")
 
-        self.data = pl.Path("./CroppedYale")
-        self.train_percent = train_percent/100
+    # random partition
+    permutation = rng.permutation(n_samples)
+    # all the permutations from 0 to n_test
+    test_ind = permutation[:n_test]
+    # all the permutations from n_test to the end
+    train_ind = permutation[n_test:(n_test + n_train)]
+    # because n_test is included in the second line, no indices duplicate
+    yield train_ind, test_ind
 
-        self.training_paths = []
-        self.training_labels = []
-        self.no_images_training = []
 
-        self.testing_paths = []
-        self.testing_labels = []
-        self.no_images_testing = []
+def train_test_split(*arrays, train_percent, seed):
+    """
+    Split arrays or matrices into random train and test subsets.
 
-        self.target_labels_training = []
+    :param arrays: all of the given matrices
+    :param train_percent: the percentage of the data that goes into training
+    :param seed: random number used to generate the indices of the split matrices. By using he same number the
+    results are the same.
 
-        def size(data):
-            """
-            Gives how much images should each person have in training.
-            """
-            folder = data.joinpath("./yaleB01")
-            pgm_files = folder.glob("*.pgm")
 
-            image_number = 0
-            for image in pgm_files:
-                # Skip the ambient files
-                if str(image).find('Ambient') != -1:
-                    continue
-                image_number += 1
-            required_no = int(self.train_percent * image_number)
+    :return: A test and train split of each array
 
-            return required_no
+    """
 
-        person_number = 0
-        # go to each dir in CroppedYale
-        for person_name in self.data.glob("*"):
-            img_number = 0
-            # Check if it is an image
-            for img_name in person_name.glob("*.pgm"):
-                # Skip the ambient files
-                if str(img_name).find('Ambient') != -1:
-                    continue
-                label = str(img_name.parent)
-                label = label.replace((str(self.data)), "")
+    # we start from the 0th element in arrays and with next we continue until the last one
+    train_ind, test_ind = next(random_indices(array=arrays[0], train_percent=train_percent, seed=seed))
 
-                # If the number is under the required for training put in training
-                if img_number < size(self.data):
-                    self.training_paths += [str(img_name)]
-                    self.training_labels += [str(label)]
-                    if len(self.no_images_training) > person_number:
-                        self.no_images_training[person_number] += 1
-                    else:
-                        self.no_images_training += [1]
-                else:
-                    # when the required number of images for training has been reached
-                    self.testing_paths += [str(img_name)]
-                    self.testing_labels += [str(label)]
-                    if len(self.no_images_testing) > person_number:
-                        self.no_images_testing[person_number] += 1
-                    else:
-                        self.no_images_testing += [1]
-                # increase after every image
-                img_number += 1
-            # increases after every folder
-            person_number += 1
 
-        self.training_paths = np.asarray(self.training_paths)
-        self.training_labels = np.asarray(self.training_labels)
-
-        self.testing_paths = np.asarray(self.testing_paths)
-        self.testing_labels = np.asarray(self.testing_labels)
-
-        print("Training image_paths are loaded successfully", self.no_images_training)
-        print("Testing image_paths are loaded successfully", self.no_images_testing)
+    return list(chain.from_iterable((a[train_ind], a[test_ind]) for a in arrays))

@@ -5,10 +5,10 @@ import scipy.linalg as linalg
 class PCA:
     """ Principal component analysis (PCA).
         Linear dimensionality reduction of the data to project it to a lower dimensional space.
-        \n
-        The train_matrix is the matrix of the training set.
-        \n
-        The quality_percent describes how much of the variance should be described by the model.
+
+        train_matrix : image matrix of the training set.
+
+        quality_percent : describes how much of the variance should be described by the model.
     """
 
     def __init__(self, train_matrix, quality_percent):
@@ -29,13 +29,17 @@ class PCA:
         # self.mean_face is a row vector mean_face.shape == img_mat[1].shape
         # Z-transformation if we divide by the standard deviation
         self.norm_matrix = (self.train_matrix - self.mean_face)/np.std(train_matrix, axis=0)
+        self.cov_matrix = np.cov(self.norm_matrix, rowvar=False)
 
     def fit_evd(self):
         """
         Using eigen value decomposition (eigendecomposition) for dimensionality reduction.
         Outputs the components that explain X% of the variance in the data.
         (X% is the quality_percent). TAKES TOO MUCH TIME, BECAUSE OF THE COVARIANCE MATRIX.
+
+        :return: principal components in a form of a matrix
         """
+
         # EVD only work on square matrices as we need to compute the eigenvalues and eigenvectors
         # For this we compute the covariance matrix K
         # K should be n x n matrix (pixels x pixels)
@@ -74,6 +78,8 @@ class PCA:
         Dimensionality reduction using singular value decomposition (SVD).
         Outputs the components that explain X% of the variance in the data.
         (X% is the quality_percent)
+
+        :return:  principal components in a form of a matrix
         """
         # U has the eigenvectors of G.Gt as columns ()
         # S has square roots of the eigenvalues of G.Gt and Gt.G in its diagonal
@@ -104,9 +110,13 @@ class PCA:
         return self.components
 
     def transform(self, image_matrix):
+        """Uses the components from the fit functions to transform an Image_matrix (of the training or testing set)
+
+        :param image_matrix: matrix with the images of the training or testing set
+
+        :return: the pixels of the images reduced to the number of principal components
         """
-        Uses the components from the fit functions to transform an Image_matrix (of the training or testing set)
-        """
+
         # Centering the data
         mean = np.mean(image_matrix, axis=0)
         image_matrix = image_matrix - mean
