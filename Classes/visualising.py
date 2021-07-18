@@ -2,26 +2,52 @@ from Classes import knearestneighbors as knn
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
+import numpy as np
 
 from sklearn.neighbors import KNeighborsClassifier as KNN
 from sklearn.metrics import accuracy_score
 
 
-def set_show(no_images_per_person, image_matrix, image_height, image_width):
-    """Shows a representation of the dataset
+def big_set_show(no_images_per_person, image_matrix, image_height, image_width, folder_number):
+    """Shows one photo pro folder of the dataset
 
     :param no_images_per_person: how many pictures each person has.
     :param image_matrix: is the matrix of the images from the  dataset.
     :param image_height: image_height describes height of the image
     :param image_width: image_width describes the width of the image
+    :param folder_number: number of folders of the dataset. The number should be such that the square
+    root of it is a integer.
 
 
     :return: showing rows of the image matrix as a picture in a plot
     """
-    for i in range(0, 36):
+    for i in range(0, folder_number):
         first_image = i*(no_images_per_person[i])
         vec = (image_matrix[first_image])
-        plt.subplot(6, 6, i + 1)
+        axis = int(np.sqrt(folder_number))
+        plt.subplot(axis, axis, i + 1)
+        plt.imshow(vec.reshape(image_height, image_width), cmap="gray")
+    plt.show()
+
+
+def small_set_show(no_images_per_person, image_matrix, image_height, image_width, folder_number):
+    """Shows one photo pro folder of the dataset
+
+    :param no_images_per_person: how many pictures each person has.
+    :param image_matrix: is the matrix of the images from the  dataset.
+    :param image_height: image_height describes height of the image
+    :param image_width: image_width describes the width of the image
+    :param folder_number: number of folders of the dataset. Must be divisible by an even number.
+     For example if there are 39 people use 38 of them.
+
+
+    :return: showing rows of the image matrix as a picture in a plot
+    """
+    for i in range(0, folder_number):
+        first_image = i*(no_images_per_person[i])
+        vec = (image_matrix[first_image])
+        axis = int(folder_number / 2)
+        plt.subplot(axis, 2, i + 1)
         plt.imshow(vec.reshape(image_height, image_width), cmap="gray")
     plt.show()
 

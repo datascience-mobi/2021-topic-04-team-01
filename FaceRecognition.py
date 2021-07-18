@@ -6,11 +6,13 @@ from Classes import visualising as vis
 
 # Get the paths and labels of the data
 image_height, image_width = 192, 168
-yaleB = img.ImageToMatrix("CroppedYale", image_height, image_width)
+yaleB = img.ImageToMatrix("CroppedYale", file_extension=".pgm",
+                          image_height=image_height, image_width=image_width)
+
 image_matrix = yaleB.matrix()
 
 # Displaying some of the images
-vis.set_show(yaleB.no_images_per_person, image_matrix, image_height, image_width)
+vis.big_set_show(yaleB.no_images_per_person, image_matrix, image_height, image_width, 36)
 
 # Splitting the data into testing and training
 train_matrix, test_matrix, training_labels, testing_labels = ds.train_test_split(image_matrix,
@@ -35,5 +37,5 @@ train_knn = knn.KNearestNeighbors(train_tr, training_labels, k=2)
 predicted_labels = train_knn.predict(test_tr)
 
 # Visualize
-k_visual = vis.k_barplot(8, train_tr, training_labels, test_tr, testing_labels,)
-print(k_visual)
+vis.k_barplot(8, train_tr, training_labels, test_tr, testing_labels,)
+
