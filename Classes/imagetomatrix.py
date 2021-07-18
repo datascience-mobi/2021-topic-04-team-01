@@ -26,12 +26,17 @@ class ImageToMatrix:
         self.image_height = image_height
         self.image_size = image_width * image_height
 
+        self.titles = []
         self.paths = []
         self.labels = []
         self.no_images_per_person = []
 
         person_number = 0
         for person_name in self.data.glob("*"):
+            # For visualisation
+            titles = str(person_name)
+            titles = titles.replace((str(data)), "")
+            self.titles += [str(titles)]
             img_number = 0
             # Check if it is an image
             for img_name in person_name.glob(to_glob):
