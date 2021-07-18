@@ -148,3 +148,27 @@ def k_sklearnplot(k_values, train_pca_sklearn, training_labels, test_pca_sklearn
                                                                               ylim=(0, 100))
     plt.xticks(rotation=90)
     plt.show()
+
+
+def knn_results(predicted_labels):
+    frequency_vector = []
+    for i in range(0, 39):
+        frequency_vector.append(0)
+
+    labels_vector = ["\yaleB01", "\yaleB02", "\yaleB03", "\yaleB04", "\yaleB05", "\yaleB06", "\yaleB07", "\yaleB08",
+                     "\yaleB09", "\yaleB10", "\yaleB11", "\yaleB12", "\yaleB13", "\yaleB14", "\yaleB15", "\yaleB16",
+                     "\yaleB17", "\yaleB18", "\yaleB19", "\yaleB20", "\yaleB21", "\yaleB22", "\yaleB23", "\yaleB24",
+                     "\yaleB25", "\yaleB26", "\yaleB27", "\yaleB28", "\yaleB29", "\yaleB30", "\yaleB31", "\yaleB32",
+                     "\yaleB33", "\yaleB34", "\yaleB35", "\yaleB36", "\yaleB37", "\yaleB38", "\yaleB39"]
+    for label in labels_vector:
+        for j in predicted_labels:
+            if j == label:
+                frequency_vector[labels_vector.index(label)] += 1
+
+    data = {"people": labels_vector,
+            "frequencies": frequency_vector}
+    df = pd.DataFrame(data, columns=["people", "frequencies"])
+    sns.barplot(data=df, x=labels_vector, y=frequency_vector).set(title="Distribution of the results")
+    plt.xticks(rotation=90)
+    plt.show()
+
