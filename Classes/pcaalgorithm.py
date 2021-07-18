@@ -29,7 +29,6 @@ class PCA:
         # self.mean_face is a row vector mean_face.shape == img_mat[1].shape
         # Z-transformation if we divide by the standard deviation
         self.norm_matrix = (self.train_matrix - self.mean_face)/np.std(train_matrix, axis=0)
-        self.cov_matrix = np.cov(self.norm_matrix, rowvar=False)
 
     def fit_evd(self):
         """

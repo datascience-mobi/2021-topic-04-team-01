@@ -17,9 +17,10 @@ class ImageToMatrix:
 
              image_width:  desired width of the image
             """
-    def __init__(self, data, image_height=192, image_width=168):
+    def __init__(self, data, file_extension=".pgm", image_height=192, image_width=168):
 
         data_folder = str("./"+data)
+        to_glob = str("*" + str(file_extension))
         self.data = pl.Path(data_folder)
         self.image_width = image_width
         self.image_height = image_height
@@ -33,7 +34,7 @@ class ImageToMatrix:
         for person_name in self.data.glob("*"):
             img_number = 0
             # Check if it is an image
-            for img_name in person_name.glob("*.pgm"):
+            for img_name in person_name.glob(to_glob):
                 # Skip the ambient files
                 if str(img_name).find('Ambient') != -1:
                     continue
