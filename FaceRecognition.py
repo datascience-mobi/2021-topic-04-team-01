@@ -36,6 +36,8 @@ print(train_tr.shape, test_tr.shape)
 train_knn = knn.KNearestNeighbors(train_tr, training_labels, k=2)
 predicted_labels = train_knn.predict(test_tr)
 
-# Visualize
-vis.k_barplot(8, train_tr, training_labels, test_tr, testing_labels,)
+# Plotting the accuracy against the number of K
+vis.k_barplot(8, train_tr, training_labels, test_tr, testing_labels)
 
+# Showing how many images are assigned to each category
+vis.knn_results(predicted_labels, yaleB.titles)

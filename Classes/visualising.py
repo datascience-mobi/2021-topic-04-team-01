@@ -22,7 +22,7 @@ def big_set_show(no_images_per_person, image_matrix, image_height, image_width, 
     :return: showing rows of the image matrix as a picture in a plot
     """
     for i in range(0, folder_number):
-        first_image = i*(no_images_per_person[i])
+        first_image = i * (no_images_per_person[i])
         vec = (image_matrix[first_image])
         axis = int(np.sqrt(folder_number))
         plt.subplot(axis, axis, i + 1)
@@ -44,7 +44,7 @@ def small_set_show(no_images_per_person, image_matrix, image_height, image_width
     :return: showing rows of the image matrix as a picture in a plot
     """
     for i in range(0, folder_number):
-        first_image = i*(no_images_per_person[i])
+        first_image = i * (no_images_per_person[i])
         vec = (image_matrix[first_image])
         axis = int(folder_number / 2)
         plt.subplot(axis, 2, i + 1)
@@ -98,7 +98,7 @@ def k_barplot(k_values, train_images_pca, training_labels, test_images_pca, test
     """
     accuracy_vec = []
     k_labels = []
-    for k in range(1, k_values+1):
+    for k in range(1, k_values + 1):
         # the accuracy values
         train_knn = knn.KNearestNeighbors(train_images_pca, training_labels, k)
         predicted_labels = train_knn.predict(test_images_pca)
@@ -109,7 +109,7 @@ def k_barplot(k_values, train_images_pca, training_labels, test_images_pca, test
         k_labels += [str(k_new)]
     df = pd.DataFrame(accuracy_vec, k_labels)
     sns.barplot(data=df, x=k_labels, y=accuracy_vec).set(title='Accuracy by different k [%]',
-                                                               ylim=(0, 100))
+                                                         ylim=(0, 100))
     plt.xticks(rotation=90)
     plt.show()
 
@@ -129,7 +129,7 @@ def k_sklearnplot(k_values, train_pca_sklearn, training_labels, test_pca_sklearn
     :return: barplot, for which on x axis are the k values
         and on y axis are the accuracy values.
     """
-    k_range = range(1, k_values+1)
+    k_range = range(1, k_values + 1)
     scores = {}
     scores_list = []
     k_labels = []
@@ -137,7 +137,7 @@ def k_sklearnplot(k_values, train_pca_sklearn, training_labels, test_pca_sklearn
         knn1 = KNN(n_neighbors=k)
         knn1.fit(X=train_pca_sklearn, y=training_labels)
         predicted_labels1 = knn1.predict(test_pca_sklearn)
-        scores[k] = accuracy_score(testing_labels, predicted_labels1)*100
+        scores[k] = accuracy_score(testing_labels, predicted_labels1) * 100
         scores_list.append(scores[k])
         # the labels
         k_new = "k=" + str(k)
@@ -145,30 +145,31 @@ def k_sklearnplot(k_values, train_pca_sklearn, training_labels, test_pca_sklearn
 
     df = pd.DataFrame(scores_list, k_labels)
     sns.barplot(data=df, x=k_labels, y=scores_list, color="salmon").set(title='Accuracy by different k [%]',
-                                                                              ylim=(0, 100))
+                                                                        ylim=(0, 100))
+
     plt.xticks(rotation=90)
     plt.show()
 
 
-def knn_results(predicted_labels):
+def knn_results(predicted_labels, titles):
+    """ Shows the results of the KNN and how many images are assigned to each category/folder.
+
+    :param predicted_labels: the predicted labels with KNN
+    :param titles: names of the folders/categories
+    :return: a plot with the distribution of the images in the folders
+    """
     frequency_vector = []
-    for i in range(0, 39):
+    for i in range(0, len(titles)):
         frequency_vector.append(0)
 
-    labels_vector = ["\yaleB01", "\yaleB02", "\yaleB03", "\yaleB04", "\yaleB05", "\yaleB06", "\yaleB07", "\yaleB08",
-                     "\yaleB09", "\yaleB10", "\yaleB11", "\yaleB12", "\yaleB13", "\yaleB14", "\yaleB15", "\yaleB16",
-                     "\yaleB17", "\yaleB18", "\yaleB19", "\yaleB20", "\yaleB21", "\yaleB22", "\yaleB23", "\yaleB24",
-                     "\yaleB25", "\yaleB26", "\yaleB27", "\yaleB28", "\yaleB29", "\yaleB30", "\yaleB31", "\yaleB32",
-                     "\yaleB33", "\yaleB34", "\yaleB35", "\yaleB36", "\yaleB37", "\yaleB38", "\yaleB39"]
-    for label in labels_vector:
+    for label in titles:
         for j in predicted_labels:
             if j == label:
-                frequency_vector[labels_vector.index(label)] += 1
+                frequency_vector[titles.index(label)] += 1
 
-    data = {"people": labels_vector,
+    data = {"people": titles,
             "frequencies": frequency_vector}
     df = pd.DataFrame(data, columns=["people", "frequencies"])
-    sns.barplot(data=df, x=labels_vector, y=frequency_vector).set(title="Distribution of the results")
+    sns.barplot(data=df, x=titles, y=frequency_vector).set(title="Distribution of the results")
     plt.xticks(rotation=90)
     plt.show()
-

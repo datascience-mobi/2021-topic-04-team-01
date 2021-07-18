@@ -33,10 +33,11 @@ class ImageToMatrix:
 
         person_number = 0
         for person_name in self.data.glob("*"):
-            # For visualisation
+            # Tittles for visualisation
             titles = str(person_name)
             titles = titles.replace((str(data)), "")
             self.titles += [str(titles)]
+
             img_number = 0
             # Check if it is an image
             for img_name in person_name.glob(to_glob):
