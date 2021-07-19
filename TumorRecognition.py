@@ -37,7 +37,7 @@ train_knn = knn.KNearestNeighbors(train_tr, training_labels, k=2)
 predicted_labels = train_knn.predict(test_tr)
 
 # Plotting the accuracy against the number of K
-vis.k_barplot(20, train_tr, training_labels, test_tr, testing_labels)
+vis.k_barplot(15, train_tr, training_labels, test_tr, testing_labels)
 
 # Showing how many images are assigned to each category
 vis.knn_results(predicted_labels, Brain_tumor.titles)
