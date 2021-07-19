@@ -6,7 +6,7 @@ from Classes import visualising as vis
 
 # Get the paths and labels of the data
 image_height, image_width = 256, 256
-Brain_tumor = img.ImageToMatrix("Brain_tumor_images", file_extension=".jpg",
+Brain_tumor = img.ImageToMatrix("Further_application", file_extension=".jpg",
                                 image_height=image_height, image_width=image_width)
 image_matrix = Brain_tumor.matrix()
 
